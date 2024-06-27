@@ -83,10 +83,11 @@ class _EcranCreationState extends State<EcranCreation> {
               Container(
                 margin: EdgeInsets.all(18),
                 child: ElevatedButton(
-                  onPressed: () async {
+                  onPressed: () {
                     User? user = FirebaseAuth.instance.currentUser;
                     Task task = Task();
 
+                    task.creationDate = DateTime.now().toString();
                     task.userid = user!.uid;
                     task.name = textControllerTaskName.text;
                     task.deadline = _dateController.text.toString();

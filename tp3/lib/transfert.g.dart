@@ -12,6 +12,7 @@ Task _$TaskFromJson(Map<String, dynamic> json) => Task()
   ..percentageDone = (json['percentageDone'] as num).toInt()
   ..percentageTimeSpent = (json['percentageTimeSpent'] as num).toDouble()
   ..deadline = json['deadline'] as String
+  ..creationDate = json['creationDate'] as String
   ..photoId = (json['photoId'] as num).toInt();
 
 Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
@@ -20,5 +21,6 @@ Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
       'percentageDone': instance.percentageDone,
       'percentageTimeSpent': instance.percentageTimeSpent,
       'deadline': instance.deadline,
+      'creationDate': instance.creationDate,
       'photoId': instance.photoId,
     };

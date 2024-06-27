@@ -12,6 +12,7 @@ class Task {
   int percentageDone = 0;
   double percentageTimeSpent = 0;
   String deadline = '';
+  String creationDate = '';
   int photoId = 0;
 
   factory Task.fromJson(Map<String, dynamic> json) =>
