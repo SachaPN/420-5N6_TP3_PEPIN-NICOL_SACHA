@@ -94,7 +94,7 @@ class _EcranCreationState extends State<EcranCreation> {
                     task.percentageTimeSpent = 0;
                     task.photoId = 0;
 
-                    addTask(task);
+                    addTask(task, context);
                   },
                   child: Text(
                     'Ajout de la tâche',

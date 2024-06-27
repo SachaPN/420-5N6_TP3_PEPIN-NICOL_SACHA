@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:tp3/transfert.dart';
 
 CollectionReference<Task> getTasks(){
@@ -16,14 +17,38 @@ CollectionReference<Task> getTasks(){
   );
 }
 
-void addTask(Task task) async {
-
+void addTask(Task task,BuildContext context) async {
   CollectionReference<Task> tasksCollection = getTasks();
+  bool same = false;
+  var tasks = await tasksCollection.get();
 
-  //var gg = await tasksCollection.get();
-  //gg.docs.length
+  if(!task.name.isEmpty){
+    if(!DateTime.parse(task.deadline).isBefore(DateTime.now())){
+      for(int i = 0;i < tasks.docs.length; i++){
+        if(tasks.docs[i].data().name == task.name){
+          same = true;
+        }
+      }
 
-
-  await tasksCollection.add(task);
-
+      if(same == false){
+        await tasksCollection.add(task);
+      }
+      else{
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Le nom est deja utilisé')));
+        print('empty string');
+        print('same name');
+      }
+    }
+    else{
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("La date choisi n'est pas dans le future")));
+      print('empty string');
+    }
+  }
+  else{
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Le nom est vide')));
+    print('empty string');
+  }
 }
