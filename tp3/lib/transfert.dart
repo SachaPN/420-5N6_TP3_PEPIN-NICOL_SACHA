@@ -7,6 +7,9 @@ part 'transfert.g.dart';
 class Task {
   Task();
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  String id = '';
+
   String userid = '';
   String name = '';
   int percentageDone = 0;

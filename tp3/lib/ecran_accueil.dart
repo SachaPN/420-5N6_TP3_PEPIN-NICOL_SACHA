@@ -1,7 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tp3/ecran_creation.dart';
+import 'package:tp3/service.dart';
+import 'package:tp3/transfert.dart';
 
 import 'tirroir_navigation.dart';
 
@@ -15,15 +18,29 @@ class EcranAccueil extends StatefulWidget {
 
 class _EcranAccueilState extends State<EcranAccueil> {
 
+  List<Task> _tasks = [];
+
+  Future<void> getTaskList() async {
+    _tasks = await FireDB.getTaskList();
+    setState(() {
+    });
+  }
+
   String formatDate(DateTime date) {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String formatted = formatter.format(date);
     return formatted.toString();
   }
 
+  String pourcentage (DateTime deadline, DateTime dateCrea) {
+
+    return deadline.difference(dateCrea).toString();
+  }
+
   @override
   initState() {
     super.initState();
+    getTaskList();
     setState(() {
     });
   }
@@ -85,8 +102,9 @@ class _EcranAccueilState extends State<EcranAccueil> {
               child: Container(
                 margin: EdgeInsets.all(18),
                 child: ListView.builder(
-                  itemCount: 5,
+                  itemCount: _tasks.length,
                   itemBuilder: (context, index) {
+
                     return Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -122,10 +140,10 @@ class _EcranAccueilState extends State<EcranAccueil> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text('Nom de la tâche : '),
-                                        Text('Date limite : '),
-                                        Text('Pourcentage complété : '),
-                                        Text('Pourcentage de temps '),
+                                        Text('Nom de la tâche : ${_tasks[index].name}'),
+                                        Text('Date limite : ${_tasks[index].deadline}'),
+                                        Text('Pourcentage complété : ${_tasks[index].percentageDone}'),
+                                        Text('Pourcentage de temps : ${pourcentage(DateTime.parse(_tasks[index].deadline), DateTime.parse(_tasks[index].creationDate))}'),
                                       ],
                                     )
                                   ],
@@ -133,21 +151,6 @@ class _EcranAccueilState extends State<EcranAccueil> {
                               ),
                             ),
                           ),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              shape:
-                              const BeveledRectangleBorder(borderRadius: BorderRadius.zero),
-                            ),
-                            onPressed: () {},
-                            child: Container(
-                              child: Column(
-                                children: [
-                                  Icon(Icons.delete_forever_outlined),
-                                  Text("Supprimer")
-                                ],
-                              ),
-                            ),
-                          )
                         ],
                       ),
                     );

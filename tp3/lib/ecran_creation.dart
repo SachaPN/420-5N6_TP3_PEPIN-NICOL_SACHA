@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tp3/service.dart';
+
 import 'package:tp3/transfert.dart';
 import 'ecran_accueil.dart';
 import 'tirroir_navigation.dart';
@@ -83,7 +84,7 @@ class _EcranCreationState extends State<EcranCreation> {
               Container(
                 margin: EdgeInsets.all(18),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     User? user = FirebaseAuth.instance.currentUser;
                     Task task = Task();
 
@@ -95,7 +96,14 @@ class _EcranCreationState extends State<EcranCreation> {
                     task.percentageTimeSpent = 0;
                     task.photoId = 0;
 
-                    addTask(task, context);
+                    await FireDB.addTask(task, context);
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EcranAccueil(),
+                      ),
+                    );
                   },
                   child: Text(
                     'Ajout de la tâche',
