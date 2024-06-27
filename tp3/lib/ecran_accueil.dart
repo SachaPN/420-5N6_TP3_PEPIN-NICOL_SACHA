@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tp3/ecran_creation.dart';
 
 import 'tirroir_navigation.dart';
 
@@ -63,7 +64,12 @@ class _EcranAccueilState extends State<EcranAccueil> {
               margin: EdgeInsets.all(18),
               child: ElevatedButton(
                 onPressed: () {
-
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EcranCreation(),
+                    ),
+                  );
                 },
                 child: Text(
                   "Création d'une tâche",
