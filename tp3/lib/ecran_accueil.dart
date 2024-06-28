@@ -35,11 +35,18 @@ class _EcranAccueilState extends State<EcranAccueil> {
 
   String pourcentage (DateTime deadline, DateTime dateCrea) {
 
-    Duration diffDeadlineNow = deadline.difference(DateTime.now());
+    int daysBetween(DateTime from, DateTime to) {
+      from = DateTime(from.year, from.month, from.day);
+      to = DateTime(to.year, to.month, to.day);
+      return (to.difference(from).inHours / 24).round();
+    }
 
-    Duration total = deadline.difference(dateCrea);
+    int diffCreaDealine = daysBetween(dateCrea, deadline);
+    int diffNowAndDeadline = daysBetween(DateTime.now(), deadline);
 
-    double result = (diffDeadlineNow.inMinutes / total.inMinutes * 100).truncateToDouble() as double ;
+    double result = (diffNowAndDeadline / diffCreaDealine * 100).truncateToDouble();
+
+    result = 100 - result;
 
     return result.toString();
   }
@@ -132,6 +139,7 @@ class _EcranAccueilState extends State<EcranAccueil> {
                                   MaterialPageRoute(
                                     builder: (context) => EcranConsultation(
                                       id: _tasks[index].id,
+                                      pourcentage: pourcentage(DateTime.parse(_tasks[index].deadline), DateTime.parse(_tasks[index].creationDate)),
                                     ),
                                   ),
                                 );
@@ -140,24 +148,25 @@ class _EcranAccueilState extends State<EcranAccueil> {
                                 height: 80.0,
                                 child: Row(
                                   children: [
+                                    (_tasks[index].photoId != '')?
                                     Expanded(
-                                      child:
-                                      CachedNetworkImage(
-                                        imageUrl: "https://1000logos.net/wp-content/uploads/2017/05/Pepsi-logo.png",
+                                      child:CachedNetworkImage(
+                                        imageUrl: _tasks[index].photoId,
                                         width: 20,
                                         fit: BoxFit.fill,
                                         progressIndicatorBuilder: (context, url, downloadProgress) =>
                                             CircularProgressIndicator(value: downloadProgress.progress),
                                         errorWidget: (context, url, error) => Icon(Icons.error),
                                       )
-                                    ),
+                                    ):
+                                    Container(),
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text('Nom de la tâche : ${_tasks[index].name}'),
                                         Text('Date limite : ${_tasks[index].deadline}'),
                                         Text('Pourcentage complété : ${_tasks[index].percentageDone}'),
-                                        Text('Pourcentage de temps : ${pourcentage(DateTime.parse(_tasks[index].deadline), DateTime.parse(_tasks[index].creationDate))}'),
+                                        Text('Pourcentage de temps écoulé: ${pourcentage(DateTime.parse(_tasks[index].deadline), DateTime.parse(_tasks[index].creationDate))}'),
                                       ],
                                     )
                                   ],

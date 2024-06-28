@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:tp3/service.dart';
 
 import 'package:tp3/transfert.dart';
@@ -18,6 +19,12 @@ class _EcranCreationState extends State<EcranCreation> {
 
   final TextEditingController textControllerTaskName = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
+
+  String formatDate(DateTime date) {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formatted = formatter.format(date);
+    return formatted.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,13 +95,13 @@ class _EcranCreationState extends State<EcranCreation> {
                     User? user = FirebaseAuth.instance.currentUser;
                     Task task = Task();
 
-                    task.creationDate = DateTime.now().toString();
+                    task.creationDate = formatDate(DateTime.now());
                     task.userid = user!.uid;
                     task.name = textControllerTaskName.text;
                     task.deadline = _dateController.text.toString();
                     task.percentageDone = 0;
                     task.percentageTimeSpent = 0;
-                    task.photoId = 0;
+                    task.photoId = '';
 
                     await FireDB.addTask(task, context);
                   },

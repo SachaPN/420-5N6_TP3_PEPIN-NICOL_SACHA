@@ -13,7 +13,7 @@ Task _$TaskFromJson(Map<String, dynamic> json) => Task()
   ..percentageTimeSpent = (json['percentageTimeSpent'] as num).toDouble()
   ..deadline = json['deadline'] as String
   ..creationDate = json['creationDate'] as String
-  ..photoId = (json['photoId'] as num).toInt();
+  ..photoId = json['photoId'] as String;
 
 Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
       'userid': instance.userid,

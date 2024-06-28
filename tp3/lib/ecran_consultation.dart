@@ -1,16 +1,21 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:tp3/service.dart';
-import 'package:tp3/transfert.dart';
+import 'package:tp3/transfert.dart' as t;
 import 'tirroir_navigation.dart';
 
 class EcranConsultation extends StatefulWidget {
 
   final String id;
+  final String pourcentage;
 
-  const EcranConsultation({Key? key, required this.id}) : super(key: key);
+  const EcranConsultation({Key? key, required this.id, required this.pourcentage}) : super(key: key);
 
   @override
   State<EcranConsultation> createState() => _EcranConsultationState();
@@ -20,20 +25,41 @@ class _EcranConsultationState extends State<EcranConsultation> {
 
   final TextEditingController textController = TextEditingController();
 
-  List<Task> _tasks = [];
-  Task _task = Task();
+  List<t.Task> _tasks = [];
+  t.Task _task = t.Task();
 
-  String pourcentage (DateTime deadline, DateTime dateCrea) {
+  final picker = ImagePicker();
+  var _imageFile;
+  String imageURL = '';
 
-    Duration diffDeadlineNow = deadline.difference(DateTime.now());
+  Future postImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      _imageFile = File(pickedFile.path);
 
-    Duration total = deadline.difference(dateCrea);
+      DocumentReference imageDoc = await FirebaseFirestore.instance.collection('images').add({
+        'url' : ''
+      });
 
-    double result = (diffDeadlineNow.inMinutes / total.inMinutes * 100).truncateToDouble() as double ;
+      Reference imageRef = await FirebaseStorage.instance.ref(imageDoc.id);
+      await imageRef.putFile(_imageFile);
+      imageURL = await imageRef.getDownloadURL();
 
-    return result.toString();
+      imageDoc.update({
+        'url' : imageURL
+      });
+
+      _task.photoId = imageURL;
+      await FireDB.modifyTask(_task);
+
+      setState(() {
+
+      });
+    }
+    else {
+      print('Pas de choix effectue.');
+    }
   }
-
 
   Future<void> getTaskList() async {
     _tasks = await FireDB.getTaskList();
@@ -182,7 +208,7 @@ class _EcranConsultationState extends State<EcranConsultation> {
                       child: Row(
                         children: [
                           Text(
-                              '${pourcentage(DateTime.parse(_task.deadline), DateTime.parse(_task.creationDate))} % du temps écoulé depuis le début'
+                              '${widget.pourcentage} % du temps écoulé depuis le début'
                           )
                         ],
                       ),
@@ -190,9 +216,19 @@ class _EcranConsultationState extends State<EcranConsultation> {
                   ],
                 ),
               ),
+              (_task.photoId != '')?
+              CachedNetworkImage(
+                imageUrl: _task.photoId,
+                width: 200,
+                fit: BoxFit.fill,
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    CircularProgressIndicator(value: downloadProgress.progress),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ) : Container(),
               ElevatedButton(
                 onPressed: () {
                   setState(() {
+                    postImage();
                   });
                 },
                 child: Text('Choisir une image'),
@@ -222,10 +258,6 @@ class _EcranConsultationState extends State<EcranConsultation> {
             onPressed: () async {
               _task.percentageDone = int.parse(textController.text);
               await FireDB.modifyTask(_task);
-
-              //await getUpdateTask(int.parse(textController.text));
-              //await getTaskDetails();
-
               setState(() {
               });
               Navigator.of(context).pop();
