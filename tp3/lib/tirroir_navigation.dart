@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tp3/ecran_connexion.dart';
+import 'package:tp3/ecran_creation.dart';
 
 import 'ecran_accueil.dart';
 
@@ -34,6 +35,12 @@ class TirroirNavigation extends StatelessWidget {
             ListTile(
               title: const Text('Ajout de tâche'),
               onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EcranCreation(),
+                  ),
+                );
                 ;;
               },
             ),

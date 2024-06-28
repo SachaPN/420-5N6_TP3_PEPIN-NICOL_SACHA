@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tp3/transfert.dart';
 
+import 'ecran_accueil.dart';
+
 
 class FireDB {
 
@@ -33,6 +35,13 @@ class FireDB {
     return taskslist;
   }
 
+
+  static Future<void> modifyTask(Task task)async {
+    CollectionReference<Task> tasksCollection = getTasks();
+    DocumentReference<Task> taskDoc = tasksCollection.doc(task.id);
+    await taskDoc.set(task);
+  }
+
   static Future<void> addTask(Task task, BuildContext context) async {
     CollectionReference<Task> tasksCollection = getTasks();
     bool same = false;
@@ -50,6 +59,12 @@ class FireDB {
 
         if (same == false) {
           await tasksCollection.add(task);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const EcranAccueil(),
+            ),
+          );
         }
         else {
           ScaffoldMessenger.of(context)

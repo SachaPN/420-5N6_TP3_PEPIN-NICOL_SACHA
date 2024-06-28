@@ -97,13 +97,6 @@ class _EcranCreationState extends State<EcranCreation> {
                     task.photoId = 0;
 
                     await FireDB.addTask(task, context);
-
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EcranAccueil(),
-                      ),
-                    );
                   },
                   child: Text(
                     'Ajout de la tâche',

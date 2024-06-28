@@ -6,6 +6,7 @@ import 'package:tp3/ecran_creation.dart';
 import 'package:tp3/service.dart';
 import 'package:tp3/transfert.dart';
 
+import 'ecran_consultation.dart';
 import 'tirroir_navigation.dart';
 
 class EcranAccueil extends StatefulWidget {
@@ -126,7 +127,14 @@ class _EcranAccueilState extends State<EcranAccueil> {
                                 const BeveledRectangleBorder(borderRadius: BorderRadius.zero),
                               ),
                               onPressed: () {
-
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EcranConsultation(
+                                      id: _tasks[index].id,
+                                    ),
+                                  ),
+                                );
                               },
                               child: Container(
                                 height: 80.0,
