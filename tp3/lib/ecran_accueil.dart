@@ -34,7 +34,13 @@ class _EcranAccueilState extends State<EcranAccueil> {
 
   String pourcentage (DateTime deadline, DateTime dateCrea) {
 
-    return deadline.difference(dateCrea).toString();
+    Duration diffDeadlineNow = deadline.difference(DateTime.now());
+
+    Duration total = deadline.difference(dateCrea);
+
+    double result = (diffDeadlineNow.inMinutes / total.inMinutes * 100).truncateToDouble() as double ;
+
+    return result.toString();
   }
 
   @override
