@@ -47,7 +47,7 @@ class FireDB {
     bool same = false;
     var tasks = await tasksCollection.get();
 
-    if (!task.name.isEmpty) {
+    if (!task.name.trim().isEmpty) {
       if (!DateTime.parse(task.deadline).isBefore(DateTime.now())) {
         for (int i = 0; i < tasks.docs.length; i++) {
           if (tasks.docs[i]
