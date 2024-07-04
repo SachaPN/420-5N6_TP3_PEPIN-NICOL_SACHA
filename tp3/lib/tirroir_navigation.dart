@@ -49,7 +49,8 @@ class TirroirNavigation extends StatelessWidget {
               onTap: () async {
                 await GoogleSignIn().signOut();
                 await FirebaseAuth.instance.signOut();
-                Navigator.pushReplacement(
+                Navigator.popUntil(context, (route) => false);
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const EcranConnexion(),
